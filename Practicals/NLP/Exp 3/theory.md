@@ -1,8 +1,7 @@
-Your **Experiment 3** is mostly correct, but the **Observation and the final Advantages/Limitations/Application section are from a preprocessing experiment**, not TF-IDF. Replace those parts with the following.
 
 ## Observations
 
-- The given text documents were successfully converted into **numerical feature vectors using TF-IDF**.
+- The given text documents were successfully converted into **numerical feature vectors using TF-IDF(Term Frequency-Inverse Document Frequency)**.
 - Each unique term was represented as a separate feature in the TF-IDF matrix.
 - Words occurring frequently in a particular document received a **higher importance score**.
 - Words appearing across multiple documents generally received comparatively lower importance.
@@ -38,7 +37,3 @@ The block you currently have under **Procedure** should instead be titled **Outp
 ## Conclusion
 
 **The TF-IDF based text representation model was successfully implemented to convert textual documents into numerical feature vectors and determine the relative importance of terms in a document collection.**
-
-With these changes, your Experiment 3 structure becomes:
-
-**Aim → Learning Objective → Tools → Theory → Implementation → Procedure → Output → Observations → Advantages/Limitations/Applications → Conclusion.**
