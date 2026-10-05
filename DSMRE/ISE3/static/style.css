@@ -1,0 +1,1152 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #1f2937;
+    background: #f5f7fb;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, #dff4ff, transparent 35%),
+        linear-gradient(135deg, #f8fbff, #eef3f8);
+}
+
+.dashboard {
+    width: min(1600px, 94%);
+    margin: auto;
+    padding: 40px 0;
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.subtitle,
+.card-label {
+    margin-bottom: 7px;
+    color: #0284c7;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12rem;
+    text-transform: uppercase;
+}
+
+h1 {
+    color: #0f172a;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+}
+
+h2 {
+    color: #1e293b;
+    font-size: 1.15rem;
+}
+
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.live-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.65);
+    animation: pulse 1.5s infinite;
+}
+
+/* =========================================================
+   DASHBOARD GRID
+========================================================= */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.9fr;
+    grid-template-areas:
+        "rack fan logs"
+        "temperature control logs";
+    gap: 20px;
+    align-items: stretch;
+}
+
+.rack-card {
+    grid-area: rack;
+}
+
+.fan-card {
+    grid-area: fan;
+}
+
+.metric-card {
+    grid-area: temperature;
+}
+
+.control-card {
+    grid-area: control;
+}
+
+.log-card {
+    grid-area: logs;
+    display: flex;
+    min-width: 0;
+    min-height: 100%;
+    flex-direction: column;
+}
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.card {
+    padding: 24px;
+    border: 1px solid #d8e1ec;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+}
+
+.card-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+/* =========================================================
+   SERVER RACK
+========================================================= */
+
+.rack-id {
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+.rack {
+    width: min(300px, 90%);
+    margin: 25px auto 0;
+    padding: 15px;
+    border: 8px solid #cbd5e1;
+    border-radius: 12px;
+    background: #eaf0f6;
+    box-shadow:
+        inset 0 0 18px rgba(15, 23, 42, 0.08),
+        0 12px 26px rgba(15, 23, 42, 0.08);
+    animation: rackGlow 4s ease-in-out infinite;
+}
+
+.rack-top,
+.rack-bottom {
+    height: 9px;
+    margin: 4px 0 10px;
+    border-radius: 3px;
+    background: #94a3b8;
+}
+
+.rack-bottom {
+    margin: 10px 0 4px;
+}
+
+.server-unit {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 55px;
+    margin: 8px 0;
+    padding: 0 15px;
+    overflow: hidden;
+    border: 1px solid #b8c4d2;
+    border-radius: 6px;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #dce5ef 0,
+            #dce5ef 8px,
+            #cfd9e5 8px,
+            #cfd9e5 12px
+        );
+    animation: serverActivity 3s ease-in-out infinite;
+}
+
+.server-unit:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.server-unit:nth-child(3) {
+    animation-delay: 0.5s;
+}
+
+.server-unit:nth-child(4) {
+    animation-delay: 0.8s;
+}
+
+.server-unit:nth-child(5) {
+    animation-delay: 1.1s;
+}
+
+.server-unit:nth-child(6) {
+    animation-delay: 1.4s;
+}
+
+.server-unit::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -45%;
+    width: 35%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(14, 165, 233, 0.22),
+        transparent
+    );
+    transform: skewX(-18deg);
+    animation: dataScan 3.5s linear infinite;
+}
+
+.server-name {
+    position: relative;
+    z-index: 1;
+    color: #334155;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.server-lights {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 6px;
+}
+
+.server-lights span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 7px rgba(34, 197, 94, 0.7);
+    animation: ledBlink 1.6s ease-in-out infinite;
+}
+
+.server-lights span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.server-lights span:nth-child(2) {
+    background: #f59e0b;
+    box-shadow: 0 0 7px rgba(245, 158, 11, 0.7);
+    animation-delay: 0.4s;
+}
+
+.server-lights span:nth-child(3) {
+    animation-delay: 0.8s;
+}
+
+.rack.heat-warning {
+    animation: rackHeatWarning 0.7s ease-in-out infinite alternate;
+}
+
+.rack.heat-warning .server-unit {
+    border-color: #ef4444;
+}
+
+.rack.heat-warning .server-lights span {
+    background: #ef4444;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+}
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.status,
+.control-mode-badge {
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status.normal,
+.status.stable {
+    color: #15803d;
+    background: #dcfce7;
+}
+
+.status.warning {
+    color: #a16207;
+    background: #fef3c7;
+}
+
+.status.critical {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+.control-mode-badge.auto {
+    color: #0369a1;
+    background: #e0f2fe;
+}
+
+.control-mode-badge.manual {
+    color: #92400e;
+    background: #fef3c7;
+}
+
+/* =========================================================
+   COOLING FAN
+========================================================= */
+
+.fan-container {
+    display: grid;
+    place-items: center;
+    min-height: 285px;
+}
+
+.fan-frame {
+    display: grid;
+    place-items: center;
+    width: 235px;
+    height: 235px;
+    border: 15px solid #cbd5e1;
+    border-radius: 25%;
+    background: #f8fafc;
+    box-shadow:
+        inset 0 0 30px rgba(15, 23, 42, 0.08),
+        0 12px 24px rgba(15, 23, 42, 0.08);
+}
+
+.fan {
+    position: relative;
+    width: 175px;
+    height: 175px;
+    animation: spin var(--fan-duration, 0.7s) linear infinite;
+}
+
+.blade {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 68px;
+    height: 40px;
+    border-radius: 80% 15% 80% 20%;
+    background: linear-gradient(135deg, #38bdf8, #2563eb);
+    transform-origin: 0 0;
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.35);
+}
+
+.blade-1 {
+    transform: rotate(0deg) translate(13px, -20px);
+}
+
+.blade-2 {
+    transform: rotate(90deg) translate(13px, -20px);
+}
+
+.blade-3 {
+    transform: rotate(180deg) translate(13px, -20px);
+}
+
+.blade-4 {
+    transform: rotate(270deg) translate(13px, -20px);
+}
+
+.fan-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 43px;
+    height: 43px;
+    border: 7px solid #cbd5e1;
+    border-radius: 50%;
+    background: #bae6fd;
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.55);
+    transform: translate(-50%, -50%);
+}
+
+.fan-information {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.fan-information div {
+    padding: 15px;
+    border: 1px solid #d8e1ec;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.fan-information span {
+    display: block;
+    margin-bottom: 6px;
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+.fan-information strong {
+    color: #0f172a;
+}
+
+/* =========================================================
+   TEMPERATURE
+========================================================= */
+
+.temperature-display {
+    display: flex;
+    align-items: flex-start;
+    margin: 30px 0;
+}
+
+.temperature-display #temperatureValue {
+    color: #0f172a;
+    font-size: 5rem;
+    font-weight: 800;
+    line-height: 0.9;
+}
+
+.degree {
+    margin-left: 7px;
+    color: #0284c7;
+    font-size: 1.6rem;
+}
+
+.temperature-scale,
+.range-labels {
+    display: flex;
+    justify-content: space-between;
+    color: #64748b;
+    font-size: 0.75rem;
+}
+
+.temperature-bar {
+    height: 12px;
+    margin-top: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e2e8f0;
+}
+
+.temperature-progress {
+    position: relative;
+    width: 0%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    transition:
+        width 1.1s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.5s ease,
+        box-shadow 0.5s ease;
+}
+
+.temperature-progress::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.65),
+        transparent
+    );
+    transform: translateX(-100%);
+    animation: progressShimmer 2.2s linear infinite;
+}
+
+.stable-bar {
+    background: linear-gradient(90deg, #22c55e, #38bdf8);
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.22);
+}
+
+.warning-bar {
+    background: linear-gradient(90deg, #facc15, #f97316);
+    box-shadow: 0 0 12px rgba(249, 115, 22, 0.28);
+}
+
+.critical-bar {
+    background: linear-gradient(90deg, #fb923c, #ef4444);
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.35);
+}
+
+.heat-spike-alert {
+    display: none;
+    margin-top: 18px;
+    padding: 10px;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: 8px;
+    color: #b91c1c;
+    background: #fee2e2;
+    font-weight: 700;
+    text-align: center;
+    animation: alertPulse 0.8s infinite alternate;
+}
+
+.heat-spike-alert.visible {
+    display: block;
+}
+
+/* =========================================================
+   CONTROL PANEL
+========================================================= */
+
+.control-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.control-summary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.control-summary > div {
+    padding: 16px;
+    border: 1px solid #d8e1ec;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.control-summary-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #64748b;
+    font-size: 0.78rem;
+}
+
+.control-summary strong {
+    color: #0f172a;
+    font-size: 1.15rem;
+}
+
+.slider-section {
+    margin-top: 26px;
+    padding: 18px;
+    border: 1px solid #d8e1ec;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+
+.slider-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.slider-heading label {
+    margin: 0;
+    color: #334155;
+    font-weight: 700;
+}
+
+.slider-heading span {
+    min-width: 52px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    color: #0369a1;
+    background: #e0f2fe;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.fan-slider-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 24px;
+}
+
+.fan-slider-container::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 8px;
+    border-radius: 999px;
+    background: #dbe5ef;
+}
+
+.fan-slider-progress {
+    position: absolute;
+    left: 0;
+    width: 0%;
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(
+        90deg,
+        #22c55e 0%,
+        #0ea5e9 55%,
+        #2563eb 100%
+    );
+    box-shadow: 0 0 10px rgba(14, 165, 233, 0.25);
+    transition:
+        width 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.4s ease;
+    pointer-events: none;
+}
+
+.fan-slider-progress.medium-speed {
+    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+}
+
+.fan-slider-progress.high-speed {
+    background: linear-gradient(90deg, #0ea5e9, #6366f1);
+}
+
+.fan-slider-progress.maximum-speed {
+    background: linear-gradient(90deg, #6366f1, #ef4444);
+}
+
+.fan-slider-container input[type="range"] {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 24px;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.fan-slider-container input[type="range"]::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 999px;
+    background: transparent;
+}
+
+.fan-slider-container input[type="range"]::-webkit-slider-thumb {
+    width: 22px;
+    height: 22px;
+    margin-top: -7px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 4px solid #ffffff;
+    border-radius: 50%;
+    background: #0ea5e9;
+    box-shadow:
+        0 3px 10px rgba(15, 23, 42, 0.22),
+        0 0 0 2px rgba(14, 165, 233, 0.18);
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.fan-slider-container input[type="range"]:hover::-webkit-slider-thumb {
+    transform: scale(1.12);
+    background: #0284c7;
+}
+
+.fan-slider-container input[type="range"]::-moz-range-track {
+    height: 8px;
+    border-radius: 999px;
+    background: transparent;
+}
+
+.fan-slider-container input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: 4px solid #ffffff;
+    border-radius: 50%;
+    background: #0ea5e9;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.22);
+}
+
+.range-labels {
+    margin-top: 9px;
+}
+
+.control-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 13px;
+    border: 0;
+    border-radius: 9px;
+    color: #ffffff;
+    background: #0ea5e9;
+    font-weight: 800;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+button:hover {
+    background: #0284c7;
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+    transform: none;
+}
+
+.control-actions button {
+    margin-top: 0;
+}
+
+.primary-control-button {
+    background: #0ea5e9;
+}
+
+.primary-control-button:hover {
+    background: #0284c7;
+}
+
+.danger-button {
+    background: #ef4444;
+}
+
+.danger-button:hover {
+    background: #dc2626;
+}
+
+.secondary-button {
+    margin-top: 12px;
+    background: #64748b;
+}
+
+.secondary-button:hover {
+    background: #475569;
+}
+
+.secondary-button.simulation-disabled {
+    background: #16a34a;
+}
+
+.secondary-button.simulation-disabled:hover {
+    background: #15803d;
+}
+
+.control-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 13px 14px;
+    border: 1px solid #d8e1ec;
+    border-radius: 11px;
+    background: #f8fafc;
+}
+
+.control-message-dot {
+    width: 9px;
+    height: 9px;
+    margin-top: 4px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.55);
+}
+
+.control-message p {
+    color: #64748b;
+    font-size: 0.82rem;
+    line-height: 1.45;
+}
+
+/* =========================================================
+   EVENT LOG
+========================================================= */
+
+.event-log {
+    flex: 1;
+    min-height: 540px;
+    max-height: 760px;
+    margin-top: 20px;
+    overflow-y: auto;
+    border: 1px solid #d8e1ec;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.log-item {
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 10px;
+    padding: 14px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.84rem;
+}
+
+.log-item:last-child {
+    border-bottom: none;
+}
+
+.log-time {
+    color: #64748b;
+    font-family: monospace;
+}
+
+.log-message {
+    color: #334155;
+    overflow-wrap: anywhere;
+}
+
+.log-item.info {
+    border-left: 4px solid #0ea5e9;
+}
+
+.log-item.success {
+    border-left: 4px solid #22c55e;
+}
+
+.log-item.warning {
+    border-left: 4px solid #f59e0b;
+}
+
+.log-item.danger {
+    border-left: 4px solid #ef4444;
+}
+
+.log-count {
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+.empty-log {
+    padding: 30px;
+    color: #64748b;
+    text-align: center;
+}
+
+.event-log::-webkit-scrollbar {
+    width: 8px;
+}
+
+.event-log::-webkit-scrollbar-track {
+    background: #eef2f7;
+}
+
+.event-log::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: #cbd5e1;
+}
+
+.event-log::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* =========================================================
+   LIVE ANALYTICS GRAPH
+========================================================= */
+
+.analytics-section {
+    margin-top: 20px;
+}
+
+.chart-card {
+    width: 100%;
+}
+
+.chart-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+.chart-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+    animation: pulse 1.5s infinite;
+}
+
+.chart-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 22px;
+}
+
+.chart-summary-item {
+    padding: 15px;
+    border: 1px solid #d8e1ec;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.chart-summary-item span {
+    display: block;
+    margin-bottom: 7px;
+    color: #64748b;
+    font-size: 0.78rem;
+}
+
+.chart-summary-item strong {
+    color: #0f172a;
+    font-size: 1.15rem;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 370px;
+    margin-top: 22px;
+    padding: 16px;
+    border: 1px solid #d8e1ec;
+    border-radius: 14px;
+    background: #ffffff;
+}
+
+/* =========================================================
+   METRIC ANIMATION
+========================================================= */
+
+#temperatureValue,
+#fanSpeedValue,
+#controlSpeedValue,
+#sliderValue,
+#rpmValue,
+#chartTemperatureValue,
+#chartFanSpeedValue,
+#chartRpmValue {
+    transition:
+        color 0.3s ease,
+        transform 0.3s ease;
+}
+
+.metric-updating {
+    color: #0284c7 !important;
+    transform: translateY(-2px) scale(1.04);
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    50% {
+        opacity: 0.35;
+    }
+}
+
+@keyframes alertPulse {
+    from {
+        box-shadow: 0 0 5px rgba(239, 68, 68, 0.2);
+    }
+
+    to {
+        box-shadow: 0 0 18px rgba(239, 68, 68, 0.45);
+    }
+}
+
+@keyframes progressShimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes serverActivity {
+    0%,
+    100% {
+        transform: translateX(0);
+        box-shadow: none;
+    }
+
+    50% {
+        transform: translateX(1px);
+        box-shadow: 0 0 12px rgba(14, 165, 233, 0.1);
+    }
+}
+
+@keyframes dataScan {
+    0% {
+        left: -45%;
+    }
+
+    100% {
+        left: 120%;
+    }
+}
+
+@keyframes ledBlink {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.35;
+        transform: scale(0.85);
+    }
+}
+
+@keyframes rackGlow {
+    0%,
+    100% {
+        box-shadow:
+            inset 0 0 18px rgba(15, 23, 42, 0.08),
+            0 12px 26px rgba(15, 23, 42, 0.08);
+    }
+
+    50% {
+        box-shadow:
+            inset 0 0 22px rgba(14, 165, 233, 0.12),
+            0 12px 30px rgba(14, 165, 233, 0.12);
+    }
+}
+
+@keyframes rackHeatWarning {
+    from {
+        box-shadow:
+            inset 0 0 15px rgba(239, 68, 68, 0.12),
+            0 0 10px rgba(239, 68, 68, 0.15);
+    }
+
+    to {
+        box-shadow:
+            inset 0 0 30px rgba(239, 68, 68, 0.28),
+            0 0 28px rgba(239, 68, 68, 0.35);
+    }
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+========================================================= */
+
+@media (max-width: 1150px) {
+    .dashboard {
+        width: min(1200px, 94%);
+    }
+
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+            "rack fan"
+            "temperature control"
+            "logs logs";
+    }
+
+    .event-log {
+        min-height: 260px;
+        max-height: 360px;
+    }
+}
+
+@media (max-width: 760px) {
+    .dashboard {
+        width: min(680px, 92%);
+        padding: 24px 0;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "rack"
+            "fan"
+            "temperature"
+            "control"
+            "logs";
+    }
+
+    .dashboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .temperature-display #temperatureValue {
+        font-size: 4rem;
+    }
+
+    .fan-frame {
+        width: 210px;
+        height: 210px;
+    }
+
+    .fan {
+        width: 155px;
+        height: 155px;
+    }
+
+    .event-log {
+        min-height: 260px;
+        max-height: 360px;
+    }
+
+    .chart-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-container {
+        height: 310px;
+    }
+
+    .chart-status {
+        display: none;
+    }
+}
+
+@media (max-width: 520px) {
+    .control-summary,
+    .control-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 460px) {
+    h1 {
+        font-size: 1.7rem;
+    }
+
+    .fan-information {
+        grid-template-columns: 1fr;
+    }
+
+    .temperature-display #temperatureValue {
+        font-size: 3.5rem;
+    }
+
+    .log-item {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .card-heading {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

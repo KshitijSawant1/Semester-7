@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Amazon Alexa Reviews Analysis</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  >
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7f9;
+      color: #1f2937;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .header {
+      padding: 18px 6%;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .header-content {
+      width: min(1100px, 100%);
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #0f766e;
+      color: white;
+      font-size: 19px;
+    }
+
+    .brand h1 {
+      font-size: 21px;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    .brand p {
+      margin-top: 3px;
+      color: #6b7280;
+      font-size: 12px;
+    }
+
+    .header-badge {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #ecfdf5;
+      color: #047857;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .main-container {
+      width: min(1100px, 92%);
+      margin: 34px auto 50px;
+    }
+
+    .intro {
+      margin-bottom: 22px;
+    }
+
+    .intro h2 {
+      color: #111827;
+      font-size: 29px;
+    }
+
+    .intro p {
+      margin-top: 7px;
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .analysis-card {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+    }
+
+    .input-panel,
+    .output-panel {
+      padding: 28px;
+    }
+
+    .input-panel {
+      border-right: 1px solid #e5e7eb;
+    }
+
+    .output-panel {
+      background: #fafafa;
+    }
+
+    .panel-label {
+      margin-bottom: 6px;
+      color: #0f766e;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+    }
+
+    .panel-title {
+      color: #111827;
+      font-size: 24px;
+    }
+
+    .panel-description {
+      margin-top: 7px;
+      margin-bottom: 22px;
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #374151;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    textarea {
+      width: 100%;
+      height: 145px;
+      padding: 15px;
+      resize: vertical;
+      outline: none;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #f9fafb;
+      color: #111827;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    textarea:focus {
+      border-color: #0f766e;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0;
+      color: #9ca3af;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: #e5e7eb;
+    }
+
+    .upload-box {
+      position: relative;
+      width: 100%;
+      min-height: 115px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .upload-box:hover {
+      border-color: #0f766e;
+      background: #f0fdfa;
+    }
+
+    .upload-box input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #ccfbf1;
+      color: #0f766e;
+      font-size: 17px;
+    }
+
+    .upload-box strong {
+      color: #111827;
+      font-size: 14px;
+    }
+
+    .upload-box span {
+      margin-top: 4px;
+      color: #6b7280;
+      font-size: 12px;
+    }
+
+    #fileName {
+      max-width: 100%;
+      margin-top: 7px;
+      color: #0f766e;
+      font-size: 12px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    button {
+      min-height: 46px;
+      padding: 0 20px;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .primary-button {
+      flex: 1;
+      background: #0f766e;
+      color: #ffffff;
+    }
+
+    .primary-button:hover {
+      background: #115e59;
+    }
+
+    .primary-button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .reset-button {
+      background: #ffffff;
+      color: #c2410c;
+      border: 1px solid #fdba74;
+    }
+
+    .reset-button:hover {
+      background: #fff7ed;
+    }
+
+    .result-box {
+      min-height: 180px;
+      padding: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    .result-box p {
+      max-width: 280px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .prediction-card {
+      min-height: 180px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      background: #f0fdf4;
+      text-align: center;
+    }
+
+    .prediction-card.negative {
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+
+    .prediction-card.neutral {
+      border-color: #fde68a;
+      background: #fffbeb;
+    }
+
+    .prediction-icon {
+      width: 52px;
+      height: 52px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #ffffff;
+      font-size: 23px;
+      box-shadow: 0 5px 14px rgba(15, 23, 42, 0.08);
+    }
+
+    .prediction-label {
+      color: #6b7280;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .prediction-value {
+      margin-top: 7px;
+      color: #111827;
+      font-size: 29px;
+      font-weight: 900;
+      text-transform: capitalize;
+    }
+
+    .graph-section {
+      margin-top: 20px;
+    }
+
+    .graph-section h3 {
+      margin-bottom: 10px;
+      color: #111827;
+      font-size: 17px;
+    }
+
+    #graphContainer img {
+      width: 100%;
+      display: block;
+      border: 1px solid #e5e7eb;
+      border-radius: 9px;
+      background: white;
+    }
+
+    #downloadBtn {
+      width: 100%;
+      margin-top: 15px;
+      background: #ea580c;
+      color: white;
+    }
+
+    #downloadBtn:hover {
+      background: #c2410c;
+    }
+
+    #statusMessage {
+      margin-top: 12px;
+      color: #6b7280;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    footer {
+      padding: 22px;
+      border-top: 1px solid #e5e7eb;
+      background: #ffffff;
+      color: #6b7280;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      .analysis-card {
+        grid-template-columns: 1fr;
+      }
+
+      .input-panel {
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .header {
+        padding: 15px 5%;
+      }
+
+      .header-badge {
+        display: none;
+      }
+
+      .main-container {
+        margin-top: 24px;
+      }
+
+      .intro h2 {
+        font-size: 24px;
+      }
+
+      .input-panel,
+      .output-panel {
+        padding: 21px;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="header-content">
+
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fas fa-comment-alt"></i>
+        </div>
+
+        <div>
+          <h1>Alexa Review Analyzer</h1>
+          <p>Sentiment Analysis using NLP</p>
+        </div>
+      </div>
+
+      <div class="header-badge">
+        NLP Experiment
+      </div>
+
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <section class="intro">
+      <h2>Amazon Alexa Reviews Analysis</h2>
+
+      <p>
+        Enter a customer review or upload a CSV dataset to predict its sentiment.
+      </p>
+    </section>
+
+    <section class="analysis-card">
+
+      <div class="input-panel">
+
+        <p class="panel-label">Input</p>
+        <h2 class="panel-title">Analyse Review</h2>
+
+        <p class="panel-description">
+          Enter a single review or upload a CSV file containing multiple reviews.
+        </p>
+
+        <form id="predictionForm">
+
+          <label class="field-label" for="textInput">
+            Review text
+          </label>
+
+          <textarea
+            id="textInput"
+            placeholder="Example: Alexa works perfectly and the sound quality is excellent."
+          ></textarea>
+
+          <div class="divider">OR</div>
+
+          <label class="upload-box" for="csvFileInput">
+
+            <input
+              type="file"
+              id="csvFileInput"
+              accept=".csv"
+              onchange="showFileName()"
+            >
+
+            <div class="upload-icon">
+              <i class="fas fa-file-upload"></i>
+            </div>
+
+            <strong>Upload CSV Dataset</strong>
+
+            <span>Click to select a CSV file</span>
+
+            <div id="fileName"></div>
+
+          </label>
+
+          <div class="button-row">
+
+            <button
+              type="button"
+              id="predictBtn"
+              class="primary-button"
+              onclick="predict()"
+            >
+              Predict Sentiment
+            </button>
+
+            <button
+              type="button"
+              class="reset-button"
+              onclick="clearForm()"
+            >
+              Reset
+            </button>
+
+          </div>
+
+        </form>
+      </div>
+
+      <div class="output-panel">
+
+        <p class="panel-label">Output</p>
+        <h2 class="panel-title">Prediction Result</h2>
+
+        <p class="panel-description">
+          The sentiment result and CSV graph will appear below.
+        </p>
+
+        <div id="predictionResult" class="result-box">
+          <p>
+            Enter a review or upload a CSV file, then click
+            <strong>Predict Sentiment</strong>.
+          </p>
+        </div>
+
+        <div
+          id="graphSection"
+          class="graph-section"
+          style="display: none;"
+        >
+          <h3>Sentiment Distribution</h3>
+          <div id="graphContainer"></div>
+        </div>
+
+        <button
+          type="button"
+          id="downloadBtn"
+          style="display: none;"
+          onclick="downloadPredictions()"
+        >
+          <i class="fas fa-download"></i>
+          &nbsp; Download Predictions
+        </button>
+
+        <div id="statusMessage"></div>
+
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    Amazon Alexa Reviews Sentiment Analysis using Natural Language Processing
+  </footer>
+
+  <script>
+    let predictionBlob = null;
+
+    function showFileName() {
+      const csvFileInput =
+        document.getElementById("csvFileInput");
+
+      const fileName =
+        document.getElementById("fileName");
+
+      if (csvFileInput.files.length > 0) {
+        fileName.textContent =
+          csvFileInput.files[0].name;
+
+        document.getElementById("textInput").value = "";
+      } else {
+        fileName.textContent = "";
+      }
+    }
+
+    function setLoading(isLoading) {
+      const predictBtn =
+        document.getElementById("predictBtn");
+
+      predictBtn.disabled = isLoading;
+
+      predictBtn.innerHTML = isLoading
+        ? '<i class="fas fa-spinner fa-spin"></i>&nbsp; Predicting...'
+        : "Predict Sentiment";
+    }
+
+    async function predict() {
+      const csvFileInput =
+        document.getElementById("csvFileInput");
+
+      const textInput =
+        document.getElementById("textInput");
+
+      const predictionResult =
+        document.getElementById("predictionResult");
+
+      const graphContainer =
+        document.getElementById("graphContainer");
+
+      const graphSection =
+        document.getElementById("graphSection");
+
+      const downloadBtn =
+        document.getElementById("downloadBtn");
+
+      const statusMessage =
+        document.getElementById("statusMessage");
+
+      const text = textInput.value.trim();
+
+      predictionBlob = null;
+      graphContainer.innerHTML = "";
+      graphSection.style.display = "none";
+      downloadBtn.style.display = "none";
+      statusMessage.textContent = "";
+
+      if (
+        csvFileInput.files.length === 0 &&
+        text === ""
+      ) {
+        predictionResult.className = "result-box";
+
+        predictionResult.innerHTML =
+          "<p>Please enter a review or upload a CSV file.</p>";
+
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        if (csvFileInput.files.length > 0) {
+          const formData = new FormData();
+
+          formData.append(
+            "file",
+            csvFileInput.files[0]
+          );
+
+          const response = await fetch("/predict", {
+            method: "POST",
+            body: formData
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              "Unable to process the uploaded CSV file."
+            );
+          }
+
+          const graphExists =
+            response.headers.get("X-Graph-Exists");
+
+          if (graphExists === "true") {
+            const graphData =
+              response.headers.get("X-Graph-Data");
+
+            displayGraph(graphData);
+          }
+
+          predictionBlob =
+            await response.blob();
+
+          predictionResult.className =
+            "prediction-card";
+
+          predictionResult.innerHTML = `
+            <div class="prediction-icon">
+              <i class="fas fa-check"></i>
+            </div>
+
+            <div class="prediction-label">
+              Dataset Status
+            </div>
+
+            <div class="prediction-value">
+              Analysis Complete
+            </div>
+          `;
+
+          downloadBtn.style.display = "block";
+
+          statusMessage.textContent =
+            "The prediction file is ready to download.";
+
+        } else {
+          const response = await fetch("/predict", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              text: text
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              "Unable to analyse the entered review."
+            );
+          }
+
+          const data = await response.json();
+
+          displayPrediction(data.prediction);
+        }
+
+      } catch (error) {
+        predictionResult.className = "result-box";
+
+        predictionResult.innerHTML = `
+          <p>
+            ${error.message}<br>
+            Please check whether the Flask server is running.
+          </p>
+        `;
+
+        statusMessage.textContent =
+          "Prediction failed.";
+
+        console.error(error);
+
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function displayPrediction(prediction) {
+      const predictionResult =
+        document.getElementById("predictionResult");
+
+      const value =
+        String(prediction).toLowerCase();
+
+      let cardClass = "prediction-card";
+      let icon = '<i class="fas fa-smile"></i>';
+
+      if (
+        value.includes("negative") ||
+        value === "0"
+      ) {
+        cardClass += " negative";
+        icon = '<i class="fas fa-frown"></i>';
+
+      } else if (value.includes("neutral")) {
+        cardClass += " neutral";
+        icon = '<i class="fas fa-meh"></i>';
+      }
+
+      predictionResult.className = cardClass;
+
+      predictionResult.innerHTML = `
+        <div class="prediction-icon">
+          ${icon}
+        </div>
+
+        <div class="prediction-label">
+          Predicted Sentiment
+        </div>
+
+        <div class="prediction-value">
+          ${prediction}
+        </div>
+      `;
+    }
+
+    function displayGraph(graphData) {
+      const graphContainer =
+        document.getElementById("graphContainer");
+
+      const graphSection =
+        document.getElementById("graphSection");
+
+      graphContainer.innerHTML = "";
+
+      if (!graphData) {
+        return;
+      }
+
+      const image =
+        document.createElement("img");
+
+      image.src =
+        "data:image/png;base64," + graphData;
+
+      image.alt =
+        "Sentiment distribution graph";
+
+      graphContainer.appendChild(image);
+
+      graphSection.style.display = "block";
+    }
+
+    function downloadPredictions() {
+      if (!predictionBlob) {
+        return;
+      }
+
+      const url =
+        URL.createObjectURL(predictionBlob);
+
+      const anchor =
+        document.createElement("a");
+
+      anchor.href = url;
+      anchor.download = "Predictions.csv";
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+
+      URL.revokeObjectURL(url);
+    }
+
+    function clearForm() {
+      document
+        .getElementById("predictionForm")
+        .reset();
+
+      document
+        .getElementById("fileName")
+        .textContent = "";
+
+      document
+        .getElementById("graphContainer")
+        .innerHTML = "";
+
+      document
+        .getElementById("graphSection")
+        .style.display = "none";
+
+      document
+        .getElementById("downloadBtn")
+        .style.display = "none";
+
+      document
+        .getElementById("statusMessage")
+        .textContent = "";
+
+      const predictionResult =
+        document.getElementById("predictionResult");
+
+      predictionResult.className =
+        "result-box";
+
+      predictionResult.innerHTML = `
+        <p>
+          Enter a review or upload a CSV file, then click
+          <strong>Predict Sentiment</strong>.
+        </p>
+      `;
+
+      predictionBlob = null;
+    }
+  </script>
+
+</body>
+
+</html>

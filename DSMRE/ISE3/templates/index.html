@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Server Cooling Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+    <main class="dashboard">
+
+        <!-- Dashboard Header -->
+        <header class="dashboard-header">
+            <div>
+                <p class="subtitle">
+                    Digital Twin Monitoring System
+                </p>
+
+                <h1>Server Rack Cooling Dashboard</h1>
+            </div>
+
+            <div class="live-indicator">
+                <span class="live-dot"></span>
+                Live Monitoring
+            </div>
+        </header>
+
+        <!-- Main Dashboard Grid -->
+        <section class="dashboard-grid">
+
+            <!-- Server Rack -->
+            <article class="card rack-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="card-label">
+                            Infrastructure
+                        </p>
+
+                        <h2>Server Rack</h2>
+                    </div>
+
+                    <span class="rack-id">
+                        SRV-01
+                    </span>
+                </div>
+
+                <div
+                    class="rack"
+                    id="serverRack"
+                >
+                    <div class="rack-top"></div>
+
+                    <div class="server-unit">
+                        <span class="server-name">
+                            Server 01
+                        </span>
+
+                        <div class="server-lights">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="server-unit">
+                        <span class="server-name">
+                            Server 02
+                        </span>
+
+                        <div class="server-lights">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="server-unit">
+                        <span class="server-name">
+                            Server 03
+                        </span>
+
+                        <div class="server-lights">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="server-unit">
+                        <span class="server-name">
+                            Server 04
+                        </span>
+
+                        <div class="server-lights">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="server-unit">
+                        <span class="server-name">
+                            Server 05
+                        </span>
+
+                        <div class="server-lights">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="rack-bottom"></div>
+                </div>
+            </article>
+
+            <!-- Cooling Fan -->
+            <article class="card fan-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="card-label">
+                            Cooling System
+                        </p>
+
+                        <h2>Cooling Fan</h2>
+                    </div>
+
+                    <span
+                        id="fanStatus"
+                        class="status stable"
+                    >
+                        {{ server.status }}
+                    </span>
+                </div>
+
+                <div class="fan-container">
+                    <div class="fan-frame">
+                        <div
+                            id="fan"
+                            class="fan"
+                            style="--fan-duration: 0.7s;"
+                        >
+                            <div class="blade blade-1"></div>
+                            <div class="blade blade-2"></div>
+                            <div class="blade blade-3"></div>
+                            <div class="blade blade-4"></div>
+                            <div class="fan-center"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fan-information">
+                    <div>
+                        <span>Speed</span>
+
+                        <strong id="fanSpeedValue">
+                            {{ server.fan_speed }}%
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Rotation</span>
+
+                        <strong id="rpmValue">
+                            {{ server.rpm }} RPM
+                        </strong>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Temperature -->
+            <article class="card metric-card">
+                <p class="card-label">
+                    Sensor Reading
+                </p>
+
+                <h2>Server Temperature</h2>
+
+                <div class="temperature-display">
+                    <span id="temperatureValue">
+                        {{ server.temperature }}
+                    </span>
+
+                    <span class="degree">
+                        °C
+                    </span>
+                </div>
+
+                <div class="temperature-scale">
+                    <span>Cool</span>
+                    <span>Warning</span>
+                    <span>Critical</span>
+                </div>
+
+                <div class="temperature-bar">
+                    <div
+                        id="temperatureProgress"
+                        class="temperature-progress stable-bar"
+                    ></div>
+                </div>
+
+                <div
+                    id="heatSpikeAlert"
+                    class="heat-spike-alert"
+                >
+                    Heat spike detected
+                </div>
+            </article>
+
+            <!-- Cooling Control -->
+            <article class="card control-card">
+
+                <div class="card-heading">
+                    <div>
+                        <p class="card-label">
+                            Cooling Control
+                        </p>
+
+                        <h2>Fan Speed Control</h2>
+                    </div>
+
+                    <span
+                        id="controlModeBadge"
+                        class="control-mode-badge auto"
+                    >
+                        Auto Mode
+                    </span>
+                </div>
+
+                <!-- Control Summary -->
+                <div class="control-summary">
+                    <div>
+                        <span class="control-summary-label">
+                            Current Fan Speed
+                        </span>
+
+                        <strong id="controlSpeedValue">
+                            {{ server.fan_speed }}%
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span class="control-summary-label">
+                            Cooling State
+                        </span>
+
+                        <strong id="coolingStateValue">
+                            Active
+                        </strong>
+                    </div>
+                </div>
+
+                <!-- Fan Speed Slider -->
+                <div class="slider-section">
+                    <div class="slider-heading">
+                        <label for="fanSpeed">
+                            Adjust fan speed
+                        </label>
+
+                        <span id="sliderValue">
+                            {{ server.fan_speed }}%
+                        </span>
+                    </div>
+
+                    <div class="fan-slider-container">
+                        <div
+                            id="fanSliderProgress"
+                            class="fan-slider-progress"
+                        ></div>
+
+                        <input
+                            id="fanSpeed"
+                            type="range"
+                            min="0"
+                            max="100"
+                            step="5"
+                            value="{{ server.fan_speed }}"
+                            aria-label="Fan speed percentage"
+                        >
+                    </div>
+
+                    <div class="range-labels">
+                        <span>Off</span>
+                        <span>Balanced</span>
+                        <span>Maximum</span>
+                    </div>
+                </div>
+
+                <!-- Main Controls -->
+                <div class="control-actions">
+                    <button
+                        id="autoModeButton"
+                        type="button"
+                        class="primary-control-button"
+                    >
+                        Disable Automatic Cooling
+                    </button>
+
+                    <button
+                        id="heatSpikeButton"
+                        type="button"
+                        class="danger-button"
+                    >
+                        Simulate Heat Spike
+                    </button>
+                </div>
+
+                <!-- Simulation Toggle -->
+                <button
+                    id="toggleSimulationButton"
+                    type="button"
+                    class="secondary-button"
+                >
+                    Disable Heat Spike Simulation
+                </button>
+
+                <!-- Control Message -->
+                <div class="control-message">
+                    <span class="control-message-dot"></span>
+
+                    <p id="modeMessage">
+                        Automatic cooling is controlling fan speed.
+                    </p>
+                </div>
+
+            </article>
+
+            <!-- Event Log -->
+            <article class="card log-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="card-label">
+                            Digital Twin Events
+                        </p>
+
+                        <h2>Server Activity Log</h2>
+                    </div>
+
+                    <span
+                        id="logCount"
+                        class="log-count"
+                    >
+                        0 Events
+                    </span>
+                </div>
+
+                <div
+                    id="eventLog"
+                    class="event-log"
+                >
+                    <div class="empty-log">
+                        Waiting for server events...
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Live Analytics Graph -->
+        <section class="analytics-section">
+
+            <article class="card chart-card">
+                <div class="card-heading">
+                    <div>
+                        <p class="card-label">
+                            Live Analytics
+                        </p>
+
+                        <h2>
+                            Temperature and Fan-Speed History
+                        </h2>
+                    </div>
+
+                    <div class="chart-status">
+                        <span class="chart-live-dot"></span>
+                        Updating every 2 seconds
+                    </div>
+                </div>
+
+                <div class="chart-summary">
+                    <div class="chart-summary-item">
+                        <span>Current Temperature</span>
+
+                        <strong id="chartTemperatureValue">
+                            {{ server.temperature }}°C
+                        </strong>
+                    </div>
+
+                    <div class="chart-summary-item">
+                        <span>Current Fan Speed</span>
+
+                        <strong id="chartFanSpeedValue">
+                            {{ server.fan_speed }}%
+                        </strong>
+                    </div>
+
+                    <div class="chart-summary-item">
+                        <span>Current RPM</span>
+
+                        <strong id="chartRpmValue">
+                            {{ server.rpm }}
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="serverChart"></canvas>
+                </div>
+            </article>
+
+        </section>
+
+    </main>
+
+    <!-- Chart.js -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js"
+    ></script>
+
+    <!-- Dashboard JavaScript -->
+    <script
+        src="{{ url_for('static', filename='script.js') }}"
+    ></script>
+</body>
+</html>
